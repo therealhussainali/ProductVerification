@@ -1,4 +1,3 @@
-import sys
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -11,7 +10,8 @@ def Main():
 
     root= tk.Tk()
 
-    root.attributes('-fullscreen', True)
+    root.attributes('-fullscreen', False)
+    root.title("Product Verification")
     canvas1 = tk.Canvas(root, width=1920, height=1080, relief='raised', bg='white')
     canvas1.pack()
 
@@ -41,18 +41,18 @@ def Main():
             if (label_warning.winfo_exists()):
                 label_warning.destroy()
 
+            ratings = product_details[2].text
+            ratings = ratings.replace('Ratings', '')
+            ratings = ratings.strip()
+            print(ratings)
+            result = Product_Validation(int(ratings))
+
             label3 = tk.Label(root, text=f'Your Product is {product_details[0].text}', font=('helvetica', 15))
             label4 = tk.Label(root, text=f'Your Product Price is {product_details[1].text} and the ratings are {product_details[2].text}', font=('helvetica', 25))
             label5 = tk.Label(root, text=(f'{result}'), font=('helvetica', 30))
 
             canvas1.create_window(960, 300, window=label3)
             canvas1.create_window(960, 350, window=label4)
-
-            ratings = product_details[2].text
-            ratings = ratings.replace('Ratings', '')
-            ratings = ratings.strip()
-            print(ratings)
-            result = Product_Validation(int(ratings))
 
             
             canvas1.create_window(960, 400, window=label5)
@@ -72,8 +72,9 @@ def Main():
     root.mainloop()
 
 def getElements(weblink):
-    options = Options()
-    options.headless = True
+
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless=new")
     driver = webdriver.Chrome(options=options)
     try:
         driver.get(weblink)
